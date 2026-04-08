@@ -13,7 +13,7 @@
     "id": 1,
     "email": "john@gmail.com",
     "username": "johnd",
-    "password": "m38rmF$",
+    "password": "$2b$12$w.mQ9dkiWgnacxlKbrwjUeMhySKVRIuHNWs9o3pfWqoEF9Q2Lh/WC",
     "name": {
       "firstname": "john",
       "lastname": "doe"
@@ -35,7 +35,7 @@
     "id": 2,
     "email": "morrison@gmail.com",
     "username": "mor_2314",
-    "password": "83r5^_",
+    "password": "$2b$12$7e9N/9b6JLexiwurTum0W.2qOZP3h9DK6W/Dv/J9cg5Rg8ewE2N16",
     "name": {
       "firstname": "david",
       "lastname": "morrison"
@@ -57,7 +57,7 @@
     "id": 3,
     "email": "kevin@gmail.com",
     "username": "kevinryan",
-    "password": "kev02937@",
+    "password": "$2b$12$Unj7RVbIFJW6I.ajaMtnnuvvbutYiuIkTIIJ5XzoNDz/gepjv1C7K",
     "name": {
       "firstname": "kevin",
       "lastname": "ryan"
@@ -79,7 +79,7 @@
     "id": 4,
     "email": "don@gmail.com",
     "username": "donero",
-    "password": "ewedon",
+    "password": "$2b$12$ZZ65UxregPDCfNU9pZvfMO1dzbpYWvgHBrAfBNg/bAfBKENxdGlqG",
     "name": {
       "firstname": "don",
       "lastname": "romer"
@@ -101,7 +101,7 @@
     "id": 5,
     "email": "derek@gmail.com",
     "username": "derek",
-    "password": "jklg*_56",
+    "password": "$2b$12$gfw7GsUA1bjNcpP/nQM7euCmflp/Yijv/EwwNTje0JYriEObgwogG",
     "name": {
       "firstname": "derek",
       "lastname": "powell"
@@ -123,7 +123,7 @@
     "id": 6,
     "email": "david_r@gmail.com",
     "username": "david_r",
-    "password": "3478*#54",
+    "password": "$2b$12$n4gJelR/mxKN3DbqyLB3L.h.qOYI08TpQX/oKMTuKlse1XGNZ7T1.",
     "name": {
       "firstname": "david",
       "lastname": "russell"
@@ -145,7 +145,7 @@
     "id": 7,
     "email": "miriam@gmail.com",
     "username": "snyder",
-    "password": "f238&@*$",
+    "password": "$2b$12$GagcYzeBsyO54RINJt26KO.a9pQRMqCOjXKLXrz9cCrlCmyLQiLkS",
     "name": {
       "firstname": "miriam",
       "lastname": "snyder"
@@ -167,7 +167,7 @@
     "id": 8,
     "email": "william@gmail.com",
     "username": "hopkins",
-    "password": "William56$hj",
+    "password": "$2b$12$O3gPF03NS/Xo7/wNvInFEeOOmeP0G0uz6qKyteKv6X22a2WQC9oje",
     "name": {
       "firstname": "william",
       "lastname": "hopkins"
@@ -189,7 +189,7 @@
     "id": 9,
     "email": "kate@gmail.com",
     "username": "kate_h",
-    "password": "kfejk@*_",
+    "password": "$2b$12$QLPjVUOwf8sXOYwbtlsDkOBNVLSyCYimIzYr5dIeDIjLQKUOSnoym",
     "name": {
       "firstname": "kate",
       "lastname": "hale"
@@ -211,7 +211,7 @@
     "id": 10,
     "email": "jimmie@gmail.com",
     "username": "jimmie_k",
-    "password": "klein*#%*",
+    "password": "$2b$12$0K63YLdS3MKq8UYe/wp3RO1cTUtUrKL2gs.fuHBFh8vCvH47D6Ipq",
     "name": {
       "firstname": "jimmie",
       "lastname": "klein"
