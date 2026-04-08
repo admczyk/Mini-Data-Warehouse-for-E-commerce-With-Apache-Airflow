@@ -2,8 +2,28 @@ import requests
 from dotenv import load_dotenv
 import os
 import json
+import bcrypt
 
 load_dotenv()
+
+def hash_passwords(data):
+    """
+    Hashes passwords of users.
+
+    Args:
+        data (list): data containing info about users of the website 
+
+    Returns:
+        list: almost the same data - only password changed
+    """
+    for user in data:
+        password = user["password"]
+        bytes = password.encode('utf-8')
+        salt = bcrypt.gensalt()
+        hash = bcrypt.hashpw(bytes, salt)
+        hashed_str = hash.decode("utf-8")
+        user["password"] = hashed_str
+    return data
 
 def fetch_data(category):
     """
@@ -14,7 +34,7 @@ def fetch_data(category):
                             (products/carts/users)
 
     Returns:
-        dict: data about set category
+        list: data about set category
     """
     url = os.getenv(f"{category}_API_KEY")
     
@@ -23,16 +43,18 @@ def fetch_data(category):
         response.raise_for_status()
 
         data = response.json()
+        if category == "USERS":
+            data = hash_passwords(data)
         return data
     except Exception as e:
-        print(f"Uh oh: {e}")
+        print(f"Unexpected: {e}")
 
-def save_as_json(dict, category):
+def save_as_json(data, category):
     """
     Saves provided data to a JSON file
 
     Args:
-        dict (dict): data saved in JSON file
+        data (list): data saved to JSON file
         category (string): sets one of three possible filenames
                             (products/carts/users)
     
@@ -40,4 +62,4 @@ def save_as_json(dict, category):
         None
     """
     with open(f"./data/raw/{category}_data.json", "w") as file:
-        json.dump(dict, file, indent=2)
+        json.dump(data, file, indent=2)
