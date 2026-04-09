@@ -19,11 +19,11 @@ def transform_product_data(data):
     df = pd.DataFrame(data)
     try:
         rating_df = pd.json_normalize(df["rating"])
-        df = pd.concat([df.drop(["rating"], axis=1), rating_df], axis=1)
-        print(df)
+        df = pd.concat([df.drop(["rating", "image"], axis=1), rating_df], axis=1)
 
+        df = df.rename(columns={"rate": "rating_rate", "count": "rating_count"})
         data_col = df.columns
-        imp_data_col = data_col[:len(data_col)-2]
+        imp_data_col = [c for c in data_col if "rating" not in c]
 
         for col_name in data_col:
             mask = df[col_name].isnull()
@@ -44,46 +44,27 @@ def transform_product_data(data):
         df["price"] = df["price"].astype(float)
         df["description"] = df["description"].astype(str)
         df["category"] = df["category"].astype(str)
-        df["image"] = df["image"].astype(str)
-        df["rate"] = df["rate"].astype(float)
-        df["count"] = df["count"].astype(int)
+        df["rating_rate"] = df["rating_rate"].astype(float)
+        df["rating_count"] = df["rating_count"].astype(int)
 
         return df
     except Exception as e:
         print(f"Unexpected {e}.")
 
-def transform_carts_data(data):
-    df = pd.json_normalize(data, record_path="products", meta=["id", "userId", "date"])
-    print(df)
-    #add handling null values
-    #change to correct variable type
+def products_summary(df):
+    try:
+        price = [0, 50, 200, 500, 1000]
+        labels_price = ["cheap", "moderate", "expensive", "very_expensive"]
+        df["price_category"] = pd.cut(df["price"], bins=price, labels=labels_price)
+        
+        rating = [0, 0.1, 3, 4, 4.5, 5]
+        labels_rating = ["no_rating", "poor", "average", "good", "excellent"]
+        df["rating_category"] = pd.cut(df["rating_rate"], bins=rating, labels=labels_rating)
 
-    return df
-
-def transform_users_data(data):
-    df = pd.DataFrame(data)
-    address_df = pd.json_normalize(df["address"])
-    name_df = pd.json_normalize(df["name"])
-    df = pd.concat([df.drop(["address", "name"], axis=1), name_df, address_df], axis=1)
-    df = df.rename(columns={
-        "geolocation.lat": "latitude",
-        "geolocation.long": "longitude"
-    })
-
-
-    print(df)    
-    
-
-
-def main():
-    categories = ["products", "carts", "users"]
-    # for category in categories:
-    #     data = extract.fetch_data(category.upper())
-    #     extract.save_as_file(data, category)
-
-    transform_product_data(read_file(categories[0]))
-    #transform_carts_data(read_file(categories[1]))
-    #transform_users_data(read_file(categories[2]))
-
-if __name__ == "__main__":
-    main()
+        df["product_segment"] = df["price_category"].astype(str) + "_" + df["rating_category"].astype(str)
+        df["avg_price_category"] = round(df.groupby("category")["price"].transform("mean"), 2)
+        df["avg_rating_category"] = round(df.groupby("category")["rating_rate"].transform("mean"), 2)
+        
+        return df
+    except Exception as e:
+        print(f"Unexpected {e}.")
