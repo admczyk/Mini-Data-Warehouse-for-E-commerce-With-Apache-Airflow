@@ -35,4 +35,4 @@ with DAG (
 
     data_loading = load_data("products")
 
-    read_data >> transformed_data >> new_transformed_data >> save_data_to_csv >> data_loading
+    extracted_data >> save_data_to_json >> read_data >> transformed_data >> new_transformed_data >> save_data_to_csv >> data_loading
