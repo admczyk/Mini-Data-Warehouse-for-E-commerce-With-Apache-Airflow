@@ -9,7 +9,7 @@ The data consists of __O czym sa dane__.
 
 
 ## Project Structure
-'''
+```
 mini_data_warehouse/
 |
 ├── dags/
@@ -26,7 +26,7 @@ mini_data_warehouse/
 ├── docker-compose.yaml
 ├── requirements.txt
 └── README.md
-'''
+```
 
 ## Reqirements
 
