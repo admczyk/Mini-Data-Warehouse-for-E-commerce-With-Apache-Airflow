@@ -1,5 +1,5 @@
 # Mini Data Warehouse For E-commerce with Apache Airflow
-This project is a complete ETL (Extract, Transform, Load) pipeline that fetches weather data from the __Website__, processes it and loads it into a PostgreSQL database.
+This project is a complete ETL (Extract, Transform, Load) pipeline that fetches product data from the __fakestoreapi.com__ website, processes it and loads it into a PostgreSQL database.
 The pipeline is orchestrated using Apache Airflow.
 
 ## Project Overview
