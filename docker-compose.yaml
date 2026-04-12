@@ -1,0 +1,88 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:13
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_CONN_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_CONN_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_CONN_DATABASE}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  airflow-webserver:
+    container_name: airflow-webserver
+    image: ${DOCKERHUB_NAMESPACE}/${DOCKERHUB_REPOSITORY}:${IMAGE_TAG}
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${METADATA_DATABASE_USERNAME}:${METADATA_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${METADATA_DATABASE_NAME}
+      AIRFLOW_CONN_POSTGRES_DB_PRODUCTS_ETL: postgresql://${ETL_DATABASE_USERNAME}:${ETL_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${ETL_DATABASE_NAME}
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${SECRET_KEY}
+      AIRFLOW__CORE__FERNET_KEY: ${FERNET_KEY}
+      AIRFLOW_VAR_WEBSITE_PATH: ${WEBSITE_PATH}
+      AIRFLOW_VAR_CATEGORY: ${CATEGORY}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+    command: >
+      bash -c "
+      airflow db migrate &&
+      airflow users create --username ${AIRFLOW_WWW_USER_USERNAME} --password ${AIRFLOW_WWW_USER_PASSWORD} --firstname admin --lastname admin --role Admin --email test@gmail.com &&
+      airflow webserver
+      "
+
+  airflow-scheduler:
+    container_name: airflow-scheduler
+    image: ${DOCKERHUB_NAMESPACE}/${DOCKERHUB_REPOSITORY}:${IMAGE_TAG}
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_started
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${METADATA_DATABASE_USERNAME}:${METADATA_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${METADATA_DATABASE_NAME}
+      AIRFLOW_CONN_POSTGRES_DB_PRODUCTS_ETL: postgresql://${ETL_DATABASE_USERNAME}:${ETL_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${ETL_DATABASE_NAME}
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${SECRET_KEY}
+      AIRFLOW__CORE__FERNET_KEY: ${FERNET_KEY}
+      AIRFLOW_VAR_WEBSITE_PATH: ${WEBSITE_PATH}
+      AIRFLOW_VAR_CATEGORY: ${CATEGORY}
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+    command: airflow scheduler
+
+  airflow-init:
+    container_name: airflow-init
+    image: ${DOCKERHUB_NAMESPACE}/${DOCKERHUB_REPOSITORY}:${IMAGE_TAG}
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${METADATA_DATABASE_USERNAME}:${METADATA_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${METADATA_DATABASE_NAME}
+      AIRFLOW_CONN_POSTGRES_DB_PRODUCTS_ETL: postgresql://${ETL_DATABASE_USERNAME}:${ETL_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${ETL_DATABASE_NAME}
+      AIRFLOW_VAR_WEBSITE_PATH: ${WEBSITE_PATH}
+      AIRFLOW_VAR_CATEGORY: ${CATEGORY}
+    command:  >
+      bash -c "
+      airflow db migrate &&
+      airflow connections add postgres_db_products_etl --conn-uri postgresql://${ETL_DATABASE_USERNAME}:${ETL_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${ETL_DATABASE_NAME} &&
+      airflow users list | grep admin || \
+      airflow users create --username ${AIRFLOW_WWW_USER_USERNAME} --password ${AIRFLOW_WWW_USER_PASSWORD} --firstname admin --lastname admin --role Admin --email test@gmail.com
+      "
+    restart: "no"
+
+volumes:
+  postgres_data:
