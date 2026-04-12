@@ -12,7 +12,7 @@ default_args = {
     "depends_on_past": False,
     "email_on_failure": False,
     "email_on_retry": False,
-    "retries": 1,
+    "retries": 0,
     "retry_delay": timedelta(minutes=5),
     "execution_timeout": timedelta(minutes=30),
     "start_date": datetime(2026, 1, 1, tzinfo=local_tz),
@@ -35,3 +35,4 @@ with DAG (
 
     data_loading = load_data("products")
 
+    read_data >> transformed_data >> new_transformed_data >> save_data_to_csv >> data_loading
