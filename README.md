@@ -35,6 +35,7 @@ mini_data_warehouse/
 |   └── transform.py        # performs data cleaning, validation and feature engineering
 ├── .env                    # Environmental variables used for configuration
 ├── docker-compose.yaml     # Defines the containerized environment, includeing Airflow services and PostgreSQL database
+├── key_generator.py        # Generates FERNET_KEY and SECRET_KEY
 ├── requirements.txt        # Lists Python dependencies required to run the project
 └── README.md               # Project documentation
 ```
@@ -74,8 +75,8 @@ The ETL process consists of:
 ## Setup Instructions
 #### 1. Clone the Repository
 ```
-git clone https://github.com/admczyk/Mini-Data-warehouse-for-e-commerce.git
-cd Mini-Data-Warehouse-for-ecommerce
+git clone https://github.com/admczyk/Mini-Data-Warehouse-for-E-commerce-With-Apache-Airflow.git
+cd Mini-Data-Warehouse-for-E-commerce-With-Apache-Airflow
 ```
 #### 2. Create a Virtual Environment
 Ensure you have Python installed, then create and activate a virtual environment:
@@ -98,7 +99,7 @@ POSTGRES_CONN_HOST=
 POSTGRES_CONN_PORT=
 POSTGRES_CONN_DATABASE=
 
-AIRFLOW_UID=            # 1000 on macOS/Linux or 50000 on Windows
+AIRFLOW_UID=                # 1000 on macOS/Linux or 50000 on Windows
 AIRFLOW_WWW_USER_USERNAME=
 AIRFLOW_WWW_USER_PASSWORD=
 FERNET_KEY=
@@ -107,6 +108,7 @@ SECRET_KEY=
 WEBSITE_PATH="https://fakestoreapi.com/"
 CATEGORY='products'
 ```
+`FERNET_KEY` and `SECRET_KEY` should be generated. To do this run `key_generator.py` file.
 
 #### 5. Build and Start Services
 Run Docker compose to start Airflow and PostgreSQL
