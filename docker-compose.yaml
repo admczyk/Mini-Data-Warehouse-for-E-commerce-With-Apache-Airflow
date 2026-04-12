@@ -5,9 +5,9 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_USER: ${POSTGRES_CONN_USERNAME}
-      POSTGRES_PASSWORD: ${POSTGRES_CONN_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_CONN_DATABASE}
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE_NAME}
     ports:
       - "5432:5432"
     volumes:
@@ -16,15 +16,15 @@ services:
 
   airflow-webserver:
     container_name: airflow-webserver
-    image: ${DOCKERHUB_NAMESPACE}/${DOCKERHUB_REPOSITORY}:${IMAGE_TAG}
+    image: apache/airflow:2.8.1
     env_file:
       - .env
     depends_on:
       - postgres
     environment:
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${METADATA_DATABASE_USERNAME}:${METADATA_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${METADATA_DATABASE_NAME}
-      AIRFLOW_CONN_POSTGRES_DB_PRODUCTS_ETL: postgresql://${ETL_DATABASE_USERNAME}:${ETL_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${ETL_DATABASE_NAME}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE_NAME}
+      AIRFLOW_CONN_POSTGRES_DB_PRODUCTS_ETL: postgresql://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE_NAME}
       AIRFLOW__WEBSERVER__SECRET_KEY: ${SECRET_KEY}
       AIRFLOW__CORE__FERNET_KEY: ${FERNET_KEY}
       AIRFLOW_VAR_WEBSITE_PATH: ${WEBSITE_PATH}
@@ -45,7 +45,7 @@ services:
 
   airflow-scheduler:
     container_name: airflow-scheduler
-    image: ${DOCKERHUB_NAMESPACE}/${DOCKERHUB_REPOSITORY}:${IMAGE_TAG}
+    image: apache/airflow:2.8.1
     env_file:
       - .env
     depends_on:
@@ -54,8 +54,8 @@ services:
       airflow-init:
         condition: service_completed_successfully
     environment:
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${METADATA_DATABASE_USERNAME}:${METADATA_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${METADATA_DATABASE_NAME}
-      AIRFLOW_CONN_POSTGRES_DB_PRODUCTS_ETL: postgresql://${ETL_DATABASE_USERNAME}:${ETL_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${ETL_DATABASE_NAME}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE_NAME}
+      AIRFLOW_CONN_POSTGRES_DB_PRODUCTS_ETL: postgresql://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE_NAME}
       AIRFLOW__WEBSERVER__SECRET_KEY: ${SECRET_KEY}
       AIRFLOW__CORE__FERNET_KEY: ${FERNET_KEY}
       AIRFLOW_VAR_WEBSITE_PATH: ${WEBSITE_PATH}
@@ -69,20 +69,20 @@ services:
 
   airflow-init:
     container_name: airflow-init
-    image: ${DOCKERHUB_NAMESPACE}/${DOCKERHUB_REPOSITORY}:${IMAGE_TAG}
+    image: apache/airflow:2.8.1
     env_file:
       - .env
     depends_on:
       - postgres
     environment:
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${METADATA_DATABASE_USERNAME}:${METADATA_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${METADATA_DATABASE_NAME}
-      AIRFLOW_CONN_POSTGRES_DB_PRODUCTS_ETL: postgresql://${ETL_DATABASE_USERNAME}:${ETL_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${ETL_DATABASE_NAME}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE_NAME}
+      AIRFLOW_CONN_POSTGRES_DB_PRODUCTS_ETL: postgresql://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE_NAME}
       AIRFLOW_VAR_WEBSITE_PATH: ${WEBSITE_PATH}
       AIRFLOW_VAR_CATEGORY: ${CATEGORY}
     command:  >
       bash -c "
       airflow db migrate &&
-      airflow connections add postgres_db_products_etl --conn-uri postgresql://${ETL_DATABASE_USERNAME}:${ETL_DATABASE_PASSWORD}@${POSTGRES_CONN_HOST}:${POSTGRES_CONN_PORT}/${ETL_DATABASE_NAME} &&
+      airflow connections add postgres_db_products_etl --conn-uri postgresql://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE_NAME} &&
       airflow users list | grep admin || \
       airflow users create --username ${AIRFLOW_WWW_USER_USERNAME} --password ${AIRFLOW_WWW_USER_PASSWORD} --firstname admin --lastname admin --role Admin --email test@gmail.com
       "
