@@ -34,7 +34,8 @@ services:
       - "8080:8080"
     volumes:
       - ./dags:/opt/airflow/dags
-      - ./data:/opt/airflow/data
+      - ./data/raw:/opt/airflow/data/raw
+      - ./data/transformed:/opt/airflow/data/transformed
       - ./etl:/opt/airflow/etl
     command: >
       bash -c "
@@ -63,7 +64,8 @@ services:
       PYTHONPATH: /opt/airflow
     volumes:
       - ./dags:/opt/airflow/dags
-      - ./data:/opt/airflow/data
+      - ./data/raw:/opt/airflow/data/raw
+      - ./data/transformed:/opt/airflow/data/transformed
       - ./etl:/opt/airflow/etl
     command: airflow scheduler
 
