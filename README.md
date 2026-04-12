@@ -93,13 +93,13 @@ pip install -r requirements.txt
 #### 4. Set Up Environment Variables
 Create `.env` file in the root directory and assign values:
 ```
-POSTGRES_CONN_USERNAME= 
-POSTGRES_CONN_PASSWORD=
-POSTGRES_CONN_HOST=
-POSTGRES_CONN_PORT=
-POSTGRES_CONN_DATABASE=
+POSTGRES_USERNAME= 
+POSTGRES_PASSWORD=
+POSTGRES_HOST=
+POSTGRES_PORT=
+POSTGRES_DATABASE_NAME=
 
-AIRFLOW_UID=                # 1000 on macOS/Linux or 50000 on Windows
+AIRFLOW_UID=                            # 1000 on macOS/Linux or 50000 on Windows
 AIRFLOW_WWW_USER_USERNAME=
 AIRFLOW_WWW_USER_PASSWORD=
 FERNET_KEY=
