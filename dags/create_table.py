@@ -6,31 +6,34 @@ from datetime import datetime, timedelta
 
 @task
 def create_table():
-    hook = PostgresHook(postgres_conn_id="postgres_db_products_etl")
-    conn = hook.get_conn()
-    cursor = conn.cursor()
+    try:
+        hook = PostgresHook(postgres_conn_id="postgres_db_products_etl")
+        conn = hook.get_conn()
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS products (
-            id INT PRIMARY KEY NOT NULL,
-            title TEXT NOT NULL,
-            price DOUBLE PRECISION NOT NULL,
-            description TEXT NOT NULL,
-            category TEXT NOT NULL,
-            rating_rate DOUBLE PRECISION,
-            rating_count INT,
-            price_category TEXT,
-            rating_category TEXT,
-            product_segment TEXT,
-            avg_price_category DOUBLE PRECISION,
-            avg_rating_category DOUBLE PRECISION
-            );
-    """)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS products (
+                id INT PRIMARY KEY NOT NULL,
+                title TEXT NOT NULL,
+                price DOUBLE PRECISION NOT NULL,
+                description TEXT NOT NULL,
+                category TEXT NOT NULL,
+                rating_rate DOUBLE PRECISION,
+                rating_count INT,
+                price_category TEXT,
+                rating_category TEXT,
+                product_segment TEXT,
+                avg_price_category DOUBLE PRECISION,
+                avg_rating_category DOUBLE PRECISION
+                );
+        """)
 
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return True
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except Exception as e:
+        raise e
 
 local_tz = pendulum.timezone("Europe/Warsaw")
 

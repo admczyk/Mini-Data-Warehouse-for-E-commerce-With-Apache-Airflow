@@ -41,6 +41,8 @@ def save_to_json(data, category):
     Returns:
         None
     """
-    
-    with open(f"/opt/airflow/data/raw/{category}_data.json", "w") as file:
-        json.dump(data, file, indent=2)
+    try:
+        with open(f"/opt/airflow/data/raw/{category}_data.json", "w") as file:
+            json.dump(data, file, indent=2)
+    except Exception as e:
+        raise e

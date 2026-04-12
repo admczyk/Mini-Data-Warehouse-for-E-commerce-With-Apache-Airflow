@@ -9,14 +9,14 @@ def read_file(category):
             data = json.load(file)
             return data
     except Exception as e:
-        print(f"Unexpected {e}.")
+        raise e
 
 @task 
 def save_as_csv(data, category):
     try:
         data.to_csv(f"./data/transformed/{category}_transformed_data.csv", index=False)
     except Exception as e:
-        print(f"Unexpected {e}.")
+        raise e
 
 @task
 def transform_product_data(data):
@@ -53,7 +53,7 @@ def transform_product_data(data):
 
         return df
     except Exception as e:
-        print(f"Unexpected {e}.")
+        raise e
 
 @task
 def products_summary(df):
@@ -72,4 +72,4 @@ def products_summary(df):
         
         return df
     except Exception as e:
-        print(f"Unexpected {e}.")
+        raise e
