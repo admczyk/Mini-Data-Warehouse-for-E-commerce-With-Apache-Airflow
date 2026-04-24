@@ -34,6 +34,26 @@ def get_data(category):
     except Exception as e:
         raise e
 
+def clean_user_data(data):
+    users = data["users"]
+    clean_users = []
+
+    for u in users:
+        clean_users.append({
+            "id": u["id"],
+            "firstName": u["firstName"],
+            "lastName": u["lastName"],
+            "age": u["age"],
+            "gender": u["gender"],
+            "birthDate": u["birthDate"],
+            "city": u["address"]["city"],
+            "state": u["address"]["state"],
+            "postalCode": u["address"]["postalCode"],
+            "country": u["address"]["country"]
+        })
+
+    return clean_users
+
 #@task
 def save_to_json(data, category):
     """
@@ -59,6 +79,8 @@ def main():
     categories = ["products", "carts", "users"]
     for c in categories:
         data = get_data(c)
+        if c is "users":
+            data = clean_user_data(data)
         save_to_json(data, c)
 
 if __name__ == "__main__":
