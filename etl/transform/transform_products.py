@@ -102,7 +102,7 @@ def transform_product_data(data):
     
     # creates new columns useful for analysis
     products_df = add_new_product_values(products_df)
-    add_new_reviews_values(reviews_df)
+    reviews_df = add_new_reviews_values(reviews_df)
 
     return products_df, reviews_df
     # try:
