@@ -1,11 +1,17 @@
-from airflow.decorators import task
+#from airflow.decorators import task
 import requests
 import json
-from airflow.models import Variable
+from dotenv import load_dotenv
+import os
+#from airflow.models import Variable
 
-WEBSITE_PATH = Variable.get("WEBSITE_PATH")
+#WEBSITE_PATH = Variable.get("WEBSITE_PATH")
 
-@task
+load_dotenv()
+
+WEBSITE_PATH = os.getenv("WEBSITE_PATH")
+
+#@task
 def get_data(category):
     """
     Extracts data from website using API_KEY provided in config.py file
@@ -17,7 +23,7 @@ def get_data(category):
     Returns:
         list: data about set category
     """
-    url = f"{WEBSITE_PATH}{category}"
+    url = f"{WEBSITE_PATH}{category}?limit=0"
     
     try:
         response = requests.get(url)
@@ -28,7 +34,7 @@ def get_data(category):
     except Exception as e:
         raise e
 
-@task
+#@task
 def save_to_json(data, category):
     """
     Saves provided data to a JSON file
@@ -42,7 +48,18 @@ def save_to_json(data, category):
         None
     """
     try:
-        with open(f"/opt/airflow/data/raw/{category}_data.json", "w") as file:
+        with open(f"./data/raw/test_{category}_data.json", "w") as file:
             json.dump(data, file, indent=2)
+        # with open(f"/opt/airflow/data/raw/{category}_data.json", "w") as file:
+        #     json.dump(data, file, indent=2)
     except Exception as e:
         raise e
+    
+def main():
+    categories = ["products", "carts", "users"]
+    for c in categories:
+        data = get_data(c)
+        save_to_json(data, c)
+
+if __name__ == "__main__":
+    main()
