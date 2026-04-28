@@ -10,36 +10,6 @@ def read_file(category):
     except Exception as e:
         raise e
 
-def extract_product_reviews(products_df):
-    # otpional : figuere out how to assign user_id to every review
-    reviews_df = products_df[["product_id", "reviews"]].explode("reviews")
-    reviews_df = pd.concat(
-            [reviews_df.drop(columns=["reviews"]).reset_index(drop=True),
-             pd.json_normalize(reviews_df["reviews"].reset_index(drop=True))],
-             axis = 1
-        )
-    reviews_df = reviews_df.drop(columns=["reviewerName", "reviewerEmail"])
-    reviews_df = reviews_df.reset_index()
-    reviews_df["index"] = reviews_df["index"] + 1
-
-    reviews_df = reviews_df.rename(columns={"index": "review_id"})
-
-    # Add handling null values in reviews :3
-    return reviews_df
-
-def extract_product_tags(products_df):
-    tags_df = tags_df.rename(columns={"tags": "tag"})
-
-    tags_df = products_df[["product_id", "tag"]].explode("tag")
-    tags_df = tags_df.reset_index(drop=True)
-    tags_df["tag"] = tags_df["tag"].astype("category")
-
-    final_tags_df = pd.DataFrame()
-    final_tags_df["tag_id"] = tags_df["tag"].cat.codes + 1
-    final_tags_df = final_tags_df.join(tags_df)
-
-    return final_tags_df
-
 def validate_product_data(df):
     # A. checking required columns first
     required_cols = ["product_id", "title", "price", "category", "stock"]
@@ -114,17 +84,6 @@ def add_new_product_values(data):
     data["value_score"] = data["overall_rating"] / data["price"]
     return data
 
-def add_new_reviews_values(data):
-    data["date"] = pd.to_datetime(data["date"])
-    data["review_year"] = data["date"].dt.year
-    data["review_month"] = data["date"].dt.month
-    data["review_bucket"] = pd.cut(
-        data["rating"],
-        bins=[0, 2, 3, 4, 5],
-        labels=["bad", "neutral", "good", "excellent"]
-    )
-    return data
-
 def transform_product_data(data):
     products_df = pd.DataFrame(data)
 
@@ -147,10 +106,10 @@ def transform_product_data(data):
 
     # IMPORTANT !!!
     # ADD SEPARATE ID FOR TAGS
-    tags_df = extract_product_tags(products_df)
+    tags_df = products_df[["product_id", "tags"]]
     products_df = products_df.drop(columns=["tags"])
 
-    reviews_df = extract_product_reviews(products_df)
+    reviews_df = products_df[["product_id", "reviews"]]
     products_df = products_df.drop(columns=["reviews"])
     
     # checks missing values
@@ -158,7 +117,6 @@ def transform_product_data(data):
     
     # creates new columns useful for analysis
     products_df = add_new_product_values(products_df)
-    reviews_df = add_new_reviews_values(reviews_df)
 
     return products_df, reviews_df, tags_df
 
