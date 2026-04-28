@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS products_reviews (
+    review_id INT PRIMARY KEY,
+    product_id INT NOT NULL,
+    rating NUMERIC NOT NULL,
+    comment TEXT,
+    date DATE,
+    review_year INT,
+    review_month INT,
+    review_bucket TEXT,
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
