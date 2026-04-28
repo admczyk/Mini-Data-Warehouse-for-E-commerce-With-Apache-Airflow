@@ -10,7 +10,21 @@ def read_file(category):
     except Exception as e:
         raise e
 
-def validate_product_data(df):
+def normalize_product_dtypes(df):
+    df["product_id"] = pd.to_numeric(df["product_id"], errors="coerce").astype("Int64")
+    df["price"] = pd.to_numeric(df["price"], errors="coerce")
+    df["discount_percentage"] = pd.to_numeric(df["discount_percentage"], errors="coerce")
+    df["overall_rating"] = pd.to_numeric(df["overall_rating"], errors="coerce")
+    df["stock"] = pd.to_numeric(df["stock"], errors="coerce").astype("Int64")
+
+    df["title"] = df["title"].astype("string").str.strip()
+    df["description"] = df["description"].astype("string").str.strip()
+    df["category"] = df["category"].astype("string").str.strip()
+    df["brand"] = df["brand"].astype("string").str.strip()
+    
+    return df
+
+def clean_and_validate_product_data(df):
     # A. checking required columns first
     required_cols = ["product_id", "title", "price", "category", "stock"]
 
@@ -66,9 +80,6 @@ def validate_product_data(df):
 
     return df
 
-def normalize_dtypes(df):
-    pass
-
 def add_new_product_values(data):
     data["final_price"] = data["price"] * (1-data["discount_percentage"])
     data["price_bucket"] = pd.cut(
@@ -81,7 +92,7 @@ def add_new_product_values(data):
         bins=[0, 2, 3, 4, 5],
         labels=["bad", "neutral", "good", "excellent"]
     )
-    data["value_score"] = data["overall_rating"] / data["price"]
+    data["value_score"] = round(data["overall_rating"] / data["price"], 3)
     return data
 
 def transform_product_data(data):
@@ -104,16 +115,17 @@ def transform_product_data(data):
         "rating": "overall_rating"
     })
 
-    # IMPORTANT !!!
-    # ADD SEPARATE ID FOR TAGS
     tags_df = products_df[["product_id", "tags"]]
     products_df = products_df.drop(columns=["tags"])
 
     reviews_df = products_df[["product_id", "reviews"]]
     products_df = products_df.drop(columns=["reviews"])
     
+    # normalize data
+    products_df = normalize_product_dtypes(products_df)
+
     # checks missing values
-    products_df = validate_product_data(products_df)
+    products_df = clean_and_validate_product_data(products_df)
     
     # creates new columns useful for analysis
     products_df = add_new_product_values(products_df)
