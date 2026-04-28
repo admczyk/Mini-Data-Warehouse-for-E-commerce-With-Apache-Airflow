@@ -11,6 +11,7 @@ def read_file(category):
         raise e
 
 def extract_product_reviews(products_df):
+    # otpional : figuere out how to assign user_id to every review
     reviews_df = products_df[["product_id", "reviews"]].explode("reviews")
     reviews_df = pd.concat(
             [reviews_df.drop(columns=["reviews"]).reset_index(drop=True),
@@ -26,22 +27,77 @@ def extract_product_reviews(products_df):
     # Add handling null values in reviews :3
     return reviews_df
 
-def check_missing_values(df):
-    # IMPORTANT - handling missing values:
-    # Numeric:
-    #   For <5% missing - drop values 
-    #   For 5-20% missing - use median/mean
-    #   For >20% missing - use advanced model-based imputation
-    # String:
-    #   If is reqired param (id) - drop value
-    #   If required param and not that important (title, desc,category) - create own category "missing_x"
-    #   If isn't required param (brand, tags) - create own category (ex. "not set")
-    #   If else (availabilityStatus) - check with other data and then decide if assign value Y/N or delete
-    #   
-    # AT THE END ADD LOGS OF MISSING VALUES, SO THEY CAN BE FIXED 
-    # REQUIRED PARAMS: id (PRIM KEY), title, price, category, stock, availabilityStatus
-    # OPTIONAL (NULL): description, brand, discountPercentage, tags, rating, minimumOrderQuantity
+def extract_product_tags(products_df):
+    tags_df = tags_df.rename(columns={"tags": "tag"})
+
+    tags_df = products_df[["product_id", "tag"]].explode("tag")
+    tags_df = tags_df.reset_index(drop=True)
+    tags_df["tag"] = tags_df["tag"].astype("category")
+
+    final_tags_df = pd.DataFrame()
+    final_tags_df["tag_id"] = tags_df["tag"].cat.codes + 1
+    final_tags_df = final_tags_df.join(tags_df)
+
+    return final_tags_df
+
+def validate_product_data(df):
+    # A. checking required columns first
+    required_cols = ["product_id", "title", "price", "category", "stock"]
+
+    # A1. checking missing values
+    missing_mask = df[required_cols].isnull().any(axis=1)
+    if missing_mask.any():
+        print(f"Deleted {missing_mask.sum()} records with missing reqired values.")
+        df = df[~missing_mask]
+
+    # A2. checking if all numeric values are positive
+    num_cols = df[required_cols].select_dtypes(include="number")
+    neg_mask = (num_cols < 0).any(axis=1)
+    if neg_mask.any():
+        print(f"Deleted {neg_mask.sum()} records with negative values.")
+        df = df[~neg_mask]
+
+    invalid_ids = df["product_id"] <= 0
+    if invalid_ids.any():
+        print(f"Removed {invalid_ids.sum()} invalid IDs.")
+        df = df[~invalid_ids]
+
+    # B. Checking other columns
+    # B1. Str
+    other_cols = [col for col in df.columns if col not in required_cols]
+
+    str_cols = df[other_cols].select_dtypes(include=["object", "str"])
+    missing_mask = str_cols.isnull().any(axis=1)
+    if missing_mask.any():
+        print(f"Found {missing_mask.sum()} rows with missing strings. Filled them with \"not set\".")
+        df[str_cols.columns] = str_cols.fillna("not set")
+
+    # B2. Numeric
+    num_cols = df[other_cols].select_dtypes(include="number")
+    missing_mask = num_cols.isnull().mean()
+    for col, ratio in missing_mask.items():
+        if ratio == 0:
+            continue
+
+        if ratio < 0.05:
+            print(f"Deleted records with missing {col} value.")
+            df = df.dropna(subset=[col])
+        elif ratio < 0.2:
+            print(f"Replacing missing {col} with 0.")
+            df[col] = df[col].fillna(0)
+    
+    df["discount_percentage"] = df["discount_percentage"].clip(0, 100)
+    df["overall_rating"] = df["overall_rating"].clip(0, 5)
+
+    dups = df.duplicated(subset=["product_id"])
+    if dups.any():
+        print(f"Removed {dups.sum()} duplicate rows.")
+        df = df[~dups]
+
     return df
+
+def normalize_dtypes(df):
+    pass
 
 def add_new_product_values(data):
     data["final_price"] = data["price"] * (1-data["discount_percentage"])
@@ -67,7 +123,7 @@ def add_new_reviews_values(data):
         bins=[0, 2, 3, 4, 5],
         labels=["bad", "neutral", "good", "excellent"]
     )
-    print(data)
+    return data
 
 def transform_product_data(data):
     products_df = pd.DataFrame(data)
@@ -88,70 +144,39 @@ def transform_product_data(data):
         "discountPercentage": "discount_percentage",
         "rating": "overall_rating"
     })
-    
-    tags_df = products_df[["product_id", "tags"]].explode("tags")
+
+    # IMPORTANT !!!
+    # ADD SEPARATE ID FOR TAGS
+    tags_df = extract_product_tags(products_df)
     products_df = products_df.drop(columns=["tags"])
-    products_df = products_df.merge(tags_df, on="product_id", how="left")
 
     reviews_df = extract_product_reviews(products_df)
     products_df = products_df.drop(columns=["reviews"])
     
     # checks missing values
-    print(products_df.isna().sum())
-    products_df = check_missing_values(products_df)
+    products_df = validate_product_data(products_df)
     
     # creates new columns useful for analysis
     products_df = add_new_product_values(products_df)
     reviews_df = add_new_reviews_values(reviews_df)
 
-    return products_df, reviews_df
-    # try:
-    #     rating_df = pd.json_normalize(df["rating"])
-    #     df = pd.concat([df.drop(["rating", "image"], axis=1), rating_df], axis=1)
-
-    #     df = df.rename(columns={"rate": "rating_rate", "count": "rating_count"})
-    #     data_col = df.columns
-    #     imp_data_col = [c for c in data_col if "rating" not in c]
-
-    #     for col_name in data_col:
-    #         mask = df[col_name].isnull()
-    #         if any(mask) and col_name in imp_data_col:
-    #             print("========== Invalid product data: ==========")
-    #             print(f"Found {sum(mask)} product(s) missing {col_name}:\n{df[mask]}")
-    #             print("WARNING: Products with invalid product data will not be included in final database.\n")
-    #             df = df[mask == False]
-    #         elif any(mask):
-    #             print("========== No data avilable: ==========")
-    #             print(f"Found {sum(mask)} product(s) missing {col_name}:\n{df[mask]}")
-    #             df.loc[mask, col_name] = 0
-        
-    #     df = df.reset_index(drop=True)
-
-    #     df["id"] = df["id"].astype(int)
-    #     df["title"] = df["title"].astype(str)
-    #     df["price"] = df["price"].astype(float)
-    #     df["description"] = df["description"].astype(str)
-    #     df["category"] = df["category"].astype(str)
-    #     df["rating_rate"] = df["rating_rate"].astype(float)
-    #     df["rating_count"] = df["rating_count"].astype(int)
-
-    #     return df
-    # except Exception as e:
-    #     raise e
+    return products_df, reviews_df, tags_df
 
 def main():
     data = read_file("products")
 
-    products, reviews = transform_product_data(data)
+    products, reviews, tags = transform_product_data(data)
     print(products)
     print(reviews)
+    print(tags)
 
     print(products.columns)
     print(reviews.columns)
 
-    print(products["price"].min())
-    print(products["price"].max())
+    # print(products["price"].min())
+    # print(products["price"].max())
 
+    print(products.dtypes)
     print(reviews.dtypes)
 
 
