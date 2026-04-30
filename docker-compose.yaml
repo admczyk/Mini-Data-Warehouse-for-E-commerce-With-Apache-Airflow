@@ -39,6 +39,7 @@ services:
       - ./etl:/opt/airflow/etl
       - ./sql/create:/opt/airflow/sql/create
       - ./sql/insert:/opt/airflow/sql/insert
+      - ./utils:/opt/airflow/utils
     command: >
       bash -c "
       airflow db migrate &&
@@ -71,6 +72,7 @@ services:
       - ./etl:/opt/airflow/etl
       - ./sql/create:/opt/airflow/sql/create
       - ./sql/insert:/opt/airflow/sql/insert
+      - ./utils:/opt/airflow/utils
     command: airflow scheduler
 
   airflow-init:
@@ -82,13 +84,13 @@ services:
       - postgres
     environment:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE_NAME}
-      AIRFLOW_CONN_POSTGRES_DB_PRODUCTS_ETL: postgresql://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE_NAME}
+      AIRFLOW_CONN_POSTGRES_DB_ETL: postgresql://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE_NAME}
       AIRFLOW_VAR_WEBSITE_PATH: ${WEBSITE_PATH}
       AIRFLOW_VAR_CATEGORY: ${CATEGORY}
     command:  >
       bash -c "
       airflow db migrate &&
-      airflow connections add postgres_db_products_etl --conn-uri postgresql://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE_NAME} &&
+      airflow connections add postgres_db_etl --conn-uri postgresql://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE_NAME} &&
       airflow users list | grep admin || \
       airflow users create --username ${AIRFLOW_WWW_USER_USERNAME} --password ${AIRFLOW_WWW_USER_PASSWORD} --firstname admin --lastname admin --role Admin --email test@gmail.com
       "
