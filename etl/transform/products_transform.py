@@ -1,14 +1,6 @@
+from airflow.decorators import task
 import pandas as pd
 import datetime as dt
-import json
-
-def read_file(category):
-    try:
-        with open(f"./data/raw/test_{category}_data.json", "r") as file:
-            data = json.load(file)
-            return data
-    except Exception as e:
-        raise e
 
 def normalize_product_dtypes(df):
     df["product_id"] = pd.to_numeric(df["product_id"], errors="coerce").astype("Int64")
@@ -50,7 +42,7 @@ def clean_and_validate_product_data(df):
     # B1. Str
     other_cols = [col for col in df.columns if col not in required_cols]
 
-    str_cols = df[other_cols].select_dtypes(include=["object", "str"])
+    str_cols = df[other_cols].select_dtypes(include=["object"])
     missing_mask = str_cols.isnull().any(axis=1)
     if missing_mask.any():
         print(f"Found {missing_mask.sum()} rows with missing strings. Filled them with \"not set\".")
@@ -95,6 +87,7 @@ def add_new_product_values(data):
     data["value_score"] = round(data["overall_rating"] / data["price"], 3)
     return data
 
+@task
 def transform_product_data(data):
     products_df = pd.DataFrame(data)
 
@@ -130,26 +123,10 @@ def transform_product_data(data):
     # creates new columns useful for analysis
     products_df = add_new_product_values(products_df)
 
-    return products_df, reviews_df, tags_df
-
-def main():
-    data = read_file("products")
-
-    products, reviews, tags = transform_product_data(data)
-    print(products)
-    print(reviews)
-    print(tags)
-
-    print(products.columns)
-    print(reviews.columns)
-
-    # print(products["price"].min())
-    # print(products["price"].max())
-
-    print(products.dtypes)
-    print(reviews.dtypes)
-
-
-if __name__ == "__main__":
-    main()
+    # return products_df, reviews_df, tags_df
+    return {
+        "products": products_df,
+        "products_reviews": reviews_df,
+        "products_tags": tags_df
+    }
 
