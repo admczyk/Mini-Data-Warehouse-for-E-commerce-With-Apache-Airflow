@@ -1,17 +1,36 @@
-#from airflow.decorators import task
+from airflow.decorators import task
+from airflow.models import Variable
 import requests
 import json
 from dotenv import load_dotenv
-import os
-#from airflow.models import Variable
+#import os
 
-#WEBSITE_PATH = Variable.get("WEBSITE_PATH")
+WEBSITE_PATH = Variable.get("WEBSITE_PATH")
 
 load_dotenv()
 
-WEBSITE_PATH = os.getenv("WEBSITE_PATH")
+#WEBSITE_PATH = os.getenv("WEBSITE_PATH")
 
-#@task
+def clean_user_data(data):
+    users = data["users"]
+    clean_users = []
+
+    for u in users:
+        clean_users.append({
+            "id": u["id"],
+            "firstName": u["firstName"],
+            "lastName": u["lastName"],
+            "gender": u["gender"],
+            "birthDate": u["birthDate"],
+            "city": u["address"]["city"],
+            "state": u["address"]["state"],
+            "postalCode": u["address"]["postalCode"],
+            "country": u["address"]["country"]
+        })
+
+    return clean_users
+
+@task
 def get_data(category):
     """
     Extracts data from website using API_KEY provided in config.py file
@@ -30,58 +49,10 @@ def get_data(category):
         response.raise_for_status()
 
         data = response.json()
+
+        if category == "users":
+            data = clean_user_data(data)
+
         return data
     except Exception as e:
         raise e
-
-def clean_user_data(data):
-    users = data["users"]
-    clean_users = []
-
-    for u in users:
-        clean_users.append({
-            "id": u["id"],
-            "firstName": u["firstName"],
-            "lastName": u["lastName"],
-            "age": u["age"],
-            "gender": u["gender"],
-            "birthDate": u["birthDate"],
-            "city": u["address"]["city"],
-            "state": u["address"]["state"],
-            "postalCode": u["address"]["postalCode"],
-            "country": u["address"]["country"]
-        })
-
-    return clean_users
-
-#@task
-def save_to_json(data, category):
-    """
-    Saves provided data to a JSON file
-
-    Args:
-        data (list): data saved to JSON file
-        category (string): sets one of three possible filenames
-                            (products/carts/users)
-    
-    Returns:
-        None
-    """
-    try:
-        with open(f"./data/raw/test_{category}_data.json", "w") as file:
-            json.dump(data, file, indent=2)
-        # with open(f"/opt/airflow/data/raw/{category}_data.json", "w") as file:
-        #     json.dump(data, file, indent=2)
-    except Exception as e:
-        raise e
-    
-def main():
-    categories = ["products", "carts", "users"]
-    for c in categories:
-        data = get_data(c)
-        if c is "users":
-            data = clean_user_data(data)
-        save_to_json(data, c)
-
-if __name__ == "__main__":
-    main()
