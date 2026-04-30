@@ -1,0 +1,365 @@
+tag_id,product_id,tag
+11,1,beauty
+75,1,mascara
+11,2,beauty
+43,2,eyeshadow
+11,3,beauty
+45,3,face powder
+11,4,beauty
+73,4,lipstick
+11,5,beauty
+82,5,nail polish
+49,6,fragrances
+90,6,perfumes
+49,7,fragrances
+90,7,perfumes
+49,8,fragrances
+90,8,perfumes
+49,9,fragrances
+90,9,perfumes
+49,10,fragrances
+90,10,perfumes
+51,11,furniture
+12,11,beds
+51,12,furniture
+112,12,sofas
+51,13,furniture
+13,13,bedside tables
+51,14,furniture
+83,14,office chairs
+51,15,furniture
+10,15,bathroom
+50,16,fruits
+76,17,meat
+92,18,pet supplies
+20,18,cat food
+76,19,meat
+26,20,cooking essentials
+129,21,vegetables
+92,22,pet supplies
+38,22,dog food
+34,23,dairy
+102,24,seafood
+129,25,vegetables
+129,26,vegetables
+25,27,condiments
+36,28,desserts
+14,29,beverages
+50,30,fruits
+50,31,fruits
+34,32,dairy
+50,33,fruits
+14,34,beverages
+23,34,coffee
+129,35,vegetables
+61,36,health supplements
+129,37,vegetables
+56,38,grains
+14,39,beverages
+50,40,fruits
+64,41,household essentials
+14,42,beverages
+63,43,home decor
+122,43,swing
+63,44,home decor
+94,44,photo frame
+63,45,home decor
+3,45,artificial plants
+63,46,home decor
+95,46,plant accessories
+63,47,home decor
+72,47,lighting
+68,48,kitchen tools
+128,48,utensils
+40,49,drinkware
+31,49,cups
+68,50,kitchen tools
+128,50,utensils
+67,51,kitchen appliances
+15,51,blenders
+28,52,cookware
+136,52,woks
+68,53,kitchen tools
+33,53,cutting boards
+68,54,kitchen tools
+66,54,juicers
+68,55,kitchen tools
+107,55,slicers
+67,56,kitchen appliances
+27,56,cooktops
+68,57,kitchen tools
+118,57,strainers
+68,58,kitchen tools
+128,58,utensils
+40,59,drinkware
+53,59,glasses
+68,60,kitchen tools
+57,60,graters
+67,61,kitchen appliances
+15,61,blenders
+68,62,kitchen tools
+65,62,ice cube trays
+68,63,kitchen tools
+118,63,strainers
+68,64,kitchen tools
+32,64,cutlery
+68,65,kitchen tools
+117,65,storage
+67,66,kitchen appliances
+79,66,microwaves
+68,67,kitchen tools
+85,67,organization
+28,68,cookware
+87,68,pans
+37,69,dinnerware
+96,69,plates
+68,70,kitchen tools
+125,70,tongs
+28,71,cookware
+97,71,pots
+68,72,kitchen tools
+127,72,turners
+68,73,kitchen tools
+85,73,organization
+68,74,kitchen tools
+128,74,utensils
+105,75,serveware
+126,75,trays
+68,76,kitchen tools
+7,76,baking
+68,77,kitchen tools
+89,77,peelers
+69,78,laptops
+2,78,apple
+69,79,laptops
+69,80,laptops
+69,81,laptops
+69,82,laptops
+22,83,clothing
+77,83,men's shirts
+22,84,clothing
+78,84,men's t-shirts
+22,85,clothing
+77,85,men's shirts
+22,86,clothing
+77,86,men's shirts
+22,87,clothing
+77,87,men's shirts
+48,88,footwear
+4,88,athletic shoes
+48,89,footwear
+115,89,sports cleats
+48,90,footwear
+19,90,casual shoes
+48,91,footwear
+4,91,athletic shoes
+48,92,footwear
+19,92,casual shoes
+133,93,watches
+71,93,leather watches
+133,94,watches
+74,94,luxury watches
+133,95,watches
+74,95,luxury watches
+133,96,watches
+74,96,luxury watches
+133,97,watches
+74,97,luxury watches
+133,98,watches
+74,98,luxury watches
+42,99,electronics
+109,99,smart speakers
+42,100,electronics
+135,100,wireless earphones
+42,101,electronics
+86,101,over-ear headphones
+42,102,electronics
+134,102,wireless chargers
+42,103,electronics
+109,103,smart speakers
+42,104,electronics
+21,104,chargers
+42,105,electronics
+98,105,power banks
+42,106,electronics
+111,106,smartwatches
+42,107,electronics
+135,107,wireless earphones
+42,108,electronics
+93,108,phone accessories
+42,109,electronics
+18,109,camera accessories
+42,110,electronics
+104,110,selfie accessories
+42,111,electronics
+104,111,selfie accessories
+42,112,electronics
+18,112,camera accessories
+81,113,motorcycles
+81,114,motorcycles
+113,114,sportbikes
+81,115,motorcycles
+113,115,sportbikes
+81,116,motorcycles
+101,116,scooters
+81,117,motorcycles
+113,117,sportbikes
+91,118,personal care
+58,118,hand soap
+91,119,personal care
+17,119,body wash
+91,120,personal care
+16,120,body lotion
+110,121,smartphones
+2,121,apple
+110,122,smartphones
+2,122,apple
+110,123,smartphones
+2,123,apple
+110,124,smartphones
+2,124,apple
+110,125,smartphones
+84,125,oppo
+110,126,smartphones
+84,126,oppo
+110,127,smartphones
+84,127,oppo
+110,128,smartphones
+99,128,realme
+110,129,smartphones
+99,129,realme
+110,130,smartphones
+99,130,realme
+110,131,smartphones
+100,131,samsung galaxy
+110,132,smartphones
+100,132,samsung galaxy
+110,133,smartphones
+100,133,samsung galaxy
+110,134,smartphones
+131,134,vivo
+110,135,smartphones
+131,135,vivo
+110,136,smartphones
+131,136,vivo
+116,137,sports equipment
+1,137,american football
+116,138,sports equipment
+8,138,baseball
+116,139,sports equipment
+8,139,baseball
+116,140,sports equipment
+9,140,basketball
+116,141,sports equipment
+9,141,basketball
+116,142,sports equipment
+30,142,cricket
+116,143,sports equipment
+30,143,cricket
+116,144,sports equipment
+30,144,cricket
+116,145,sports equipment
+30,145,cricket
+116,146,sports equipment
+6,146,badminton
+116,147,sports equipment
+47,147,football
+116,148,sports equipment
+54,148,golf
+116,149,sports equipment
+54,149,golf
+116,150,sports equipment
+8,150,baseball
+116,151,sports equipment
+124,151,tennis
+116,152,sports equipment
+124,152,tennis
+116,153,sports equipment
+132,153,volleyball
+44,154,eyewear
+120,154,sunglasses
+44,155,eyewear
+120,155,sunglasses
+44,156,eyewear
+120,156,sunglasses
+44,157,eyewear
+88,157,party glasses
+44,158,eyewear
+120,158,sunglasses
+42,159,electronics
+123,159,tablets
+42,160,electronics
+123,160,tablets
+42,161,electronics
+123,161,tablets
+22,162,clothing
+39,162,dresses
+22,163,clothing
+52,163,girls' dresses
+22,164,clothing
+39,164,dresses
+22,165,clothing
+39,165,dresses
+22,166,clothing
+39,166,dresses
+103,167,sedans
+130,167,vehicles
+103,168,sedans
+114,168,sports cars
+130,168,vehicles
+60,169,hatchbacks
+24,169,compact cars
+130,169,vehicles
+121,170,suvs
+130,170,vehicles
+80,171,minivans
+130,171,vehicles
+46,172,fashion accessories
+59,172,handbags
+46,173,fashion accessories
+70,173,leather bags
+46,174,fashion accessories
+35,174,designer bags
+46,175,fashion accessories
+5,175,backpacks
+46,176,fashion accessories
+59,176,handbags
+22,177,clothing
+55,177,gowns
+22,178,clothing
+29,178,corsets
+106,178,skirts
+22,179,clothing
+29,179,corsets
+106,179,skirts
+22,180,clothing
+39,180,dresses
+22,181,clothing
+119,181,suits
+46,182,fashion accessories
+41,182,earrings
+46,183,fashion accessories
+41,183,earrings
+46,184,fashion accessories
+41,184,earrings
+48,185,footwear
+108,185,slippers
+48,186,footwear
+62,186,heel shoes
+48,187,footwear
+137,187,women's shoes
+48,188,footwear
+19,188,casual shoes
+48,189,footwear
+137,189,women's shoes
+133,190,watches
+74,190,luxury watches
+133,191,watches
+74,191,luxury watches
+133,192,watches
+74,192,luxury watches
+138,192,women's watches
+133,193,watches
+138,193,women's watches
+133,194,watches
+138,194,women's watches
