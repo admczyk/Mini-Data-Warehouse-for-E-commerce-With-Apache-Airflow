@@ -5,6 +5,6 @@ CREATE TABLE IF NOT EXISTS carts (
     user_id INT NOT NULL,
     cart_total_quantity INT NOT NULL,
     cart_size_bucket TEXT,
-    cart_value_bucket TEXT
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    cart_value_bucket TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
