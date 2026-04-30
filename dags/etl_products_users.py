@@ -23,14 +23,6 @@ default_args = {
     "start_date": datetime(2026, 1, 1, tzinfo=local_tz),
 }
 
-# @task
-# def transform(data):
-#     result = pt.transform_product_data(data)
-#     return {
-#         "products": result[0],
-#         "reviews": result[1],
-#         "tags": result[2]
-#     }
 
 @task
 def load(data, category):
