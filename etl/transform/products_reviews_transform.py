@@ -1,3 +1,4 @@
+from airflow.decorators import task
 import pandas as pd
 import datetime as dt
 
@@ -9,9 +10,9 @@ def normalize_reviews_dtypes(reviews_df):
     reviews_df["product_id"] = pd.to_numeric(reviews_df["product_id"], errors="coerce").astype("Int64")
     reviews_df["rating"] = pd.to_numeric(reviews_df["rating"], errors="coerce")
 
-    reviews_df["comment"] = reviews_df["comment"].astype("string").str.strip()
+    reviews_df["review_comment"] = reviews_df["review_comment"].astype("string").str.strip()
    
-    reviews_df["date"] = pd.to_datetime(reviews_df["date"], errors="coerce")
+    reviews_df["review_date"] = pd.to_datetime(reviews_df["review_date"], errors="coerce")
 
     return reviews_df
 
@@ -24,7 +25,7 @@ def clean_and_validate_reviews_data(reviews_df):
         reviews_df = reviews_df[~missing_mask]
 
     ids = required_cols[:2]
-    invalid_ids = (reviews_df[ids] < 0).any(axis=1)
+    invalid_ids = (reviews_df[ids] <= 0).any(axis=1)
     if invalid_ids.any():
         print(f"Deleted {invalid_ids.sum()} records with invalid ids.")
         reviews_df = reviews_df[~invalid_ids]
@@ -36,12 +37,12 @@ def clean_and_validate_reviews_data(reviews_df):
         print(f"Removed {dups.sum()} duplicate rows.")
         reviews_df = reviews_df[~dups]
 
-    missing_str = reviews_df["comment"].isnull()
+    missing_str = reviews_df["review_comment"].isnull()
     if missing_str.any():
         print(f"Found {missing_str.sum()} rows with missing strings. Filled them with \"no comment\".")
-        reviews_df["comment"] =  reviews_df["comment"].fillna("no comment")
+        reviews_df["review_comment"] =  reviews_df["review_comment"].fillna("no comment")
 
-    missing_date = reviews_df["date"].isnull()
+    missing_date = reviews_df["review_date"].isnull()
     if missing_date.any():
        print(f"Deleted {missing_date.sum()} records with missing date.")
        reviews_df = reviews_df[~missing_date]
@@ -50,8 +51,8 @@ def clean_and_validate_reviews_data(reviews_df):
 
 def add_new_reviews_values(data):
     print(data.dtypes)
-    data["review_year"] = data["date"].dt.year
-    data["review_month"] = data["date"].dt.month
+    data["review_year"] = data["review_date"].dt.year
+    data["review_month"] = data["review_date"].dt.month
     data["review_bucket"] = pd.cut(
         data["rating"],
         bins=[0, 2, 3, 4, 5],
@@ -59,6 +60,7 @@ def add_new_reviews_values(data):
     )
     return data
 
+@task
 def transform_reviews_data(reviews_df):
     # otpional : figuere out how to assign user_id to every review
     reviews_df = reviews_df.explode("reviews")
@@ -72,7 +74,11 @@ def transform_reviews_data(reviews_df):
     reviews_df = reviews_df.reset_index()
     reviews_df["index"] = reviews_df["index"] + 1
 
-    reviews_df = reviews_df.rename(columns={"index": "review_id"})
+    reviews_df = reviews_df.rename(columns={
+        "index": "review_id",
+        "comment": "review_comment",
+        "date": "review_date"
+        })
 
     normalized_reviews_df = normalize_reviews_dtypes(reviews_df)
 
