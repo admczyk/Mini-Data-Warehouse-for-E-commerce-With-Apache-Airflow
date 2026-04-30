@@ -1,3 +1,4 @@
+from airflow.decorators import task
 import pandas as pd
 
 def normalize_tags_dtypes(tags_df):
@@ -23,6 +24,7 @@ def clean_and_validate_tags_data(tags_df):
 
     return tags_df
 
+@task
 def transform_tags_data(tags_df):
     tags_df = tags_df.explode("tags")
     tags_df = tags_df.reset_index(drop=True)

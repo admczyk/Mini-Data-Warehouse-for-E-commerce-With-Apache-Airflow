@@ -1,3 +1,4 @@
+from airflow.decorators import task
 import pandas as pd
 
 def normalize_carts_products_dtypes(carts_df):
@@ -33,6 +34,7 @@ def clean_and_validate_carts_products_data(carts_df):
 
     return carts_df
 
+@task
 def transform_carts_products_data(carts_df):
     carts_products_df = carts_df.explode("products").reset_index(drop=True)
     products_df = pd.json_normalize(carts_products_df["products"])

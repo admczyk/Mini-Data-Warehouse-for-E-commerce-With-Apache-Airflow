@@ -1,3 +1,4 @@
+from airflow.decorators import task
 import pandas as pd
 
 def normalize_carts_dtypes(carts_df):
@@ -47,6 +48,7 @@ def add_new_cart_values(data):
 
     return data
 
+@task
 def transform_carts_data(data):
     carts_df = pd.DataFrame(data)
 
@@ -71,5 +73,8 @@ def transform_carts_data(data):
     final_carts_df = add_new_cart_values(cleaned_carts_df)
 
     # returns two dataframes
-    return final_carts_df, cart_products_df
+    return {
+        "carts": final_carts_df, 
+        "carts_contents": cart_products_df
+    }
 
