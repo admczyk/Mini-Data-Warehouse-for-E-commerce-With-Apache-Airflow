@@ -1,14 +1,6 @@
+from airflow.decorators import task
 import pandas as pd
 import datetime as dt
-import json
-
-def read_file(category):
-    try:
-        with open(f"./data/raw/test_{category}_data.json", "r") as file:
-            data = json.load(file)
-            return data
-    except Exception as e:
-        raise e
     
 def add_new_users_values(data):
     data["birth_date"] = pd.to_datetime(data["birth_date"])
@@ -18,13 +10,13 @@ def add_new_users_values(data):
         labels=["18-24", "25-34", "35-44", "45-54", "55-64", "65+"]
     )
     return data
-    
+
+@task  
 def transform_users_data(data):
     users_df = pd.DataFrame(data)
-    
-    users_df = users_df.drop(columns=["age"])
 
     users_df = users_df.rename(columns={
+        "id": "user_id",
         "firstName": "first_name",
         "lastName": "last_name",
         "birthDate": "birth_date",
@@ -34,14 +26,3 @@ def transform_users_data(data):
     users_df = add_new_users_values(users_df)
 
     return users_df
-
-def main():
-    data = read_file("users")
-
-    result = transform_users_data(data)
-    print(result)
-    print(result.columns)
-    print(result.dtypes)
-
-if __name__ == "__main__":
-    main()
