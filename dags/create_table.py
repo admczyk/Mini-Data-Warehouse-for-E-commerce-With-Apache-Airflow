@@ -5,35 +5,24 @@ import pendulum
 from datetime import datetime, timedelta
 
 @task
-def create_table():
+def create_table(category):
     try:
         hook = PostgresHook(postgres_conn_id="postgres_db_products_etl")
         conn = hook.get_conn()
         cursor = conn.cursor()
 
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS products (
-                id INT PRIMARY KEY NOT NULL,
-                title TEXT NOT NULL,
-                price DOUBLE PRECISION NOT NULL,
-                description TEXT NOT NULL,
-                category TEXT NOT NULL,
-                rating_rate DOUBLE PRECISION,
-                rating_count INT,
-                price_category TEXT,
-                rating_category TEXT,
-                product_segment TEXT,
-                avg_price_category DOUBLE PRECISION,
-                avg_rating_category DOUBLE PRECISION
-                );
-        """)
+        with open(f"/opt/airflow/sql/create/create_{category}_table.sql", "r") as file:
+            query = file.read()
+
+        cursor.execute(query)
 
         conn.commit()
-        cursor.close()
-        conn.close()
         return True
     except Exception as e:
         raise e
+    finally:
+        cursor.close()
+        conn.close()
 
 local_tz = pendulum.timezone("Europe/Warsaw")
 
@@ -49,10 +38,18 @@ default_args = {
 }
 
 with DAG (
-    dag_id = "create_product_table",
+    dag_id = "create_tables",
     default_args = default_args,
-    description = "DAG that creates table that data can be inserted into",
+    description = "DAG that executes creating tables in DB",
     schedule = None,
     catchup = False
 ) as create_products_table:
-    create_table_task = create_table()
+    create_products_table_task = create_table("products")
+    create_users_table_task = create_table("users")
+    create_carts_table_task = create_table("carts")
+    create_products_reviews_table_task = create_table("products_reviews")
+    create_products_tags_table_task = create_table("products_tags")
+    create_carts_contents_table_task = create_table("carts_contents")
+
+    create_products_table_task >> create_users_table_task >> create_carts_table_task >> create_products_reviews_table_task >> create_products_tags_table_task >> create_carts_contents_table_task
+
