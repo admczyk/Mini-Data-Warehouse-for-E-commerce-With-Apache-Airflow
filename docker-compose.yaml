@@ -37,6 +37,8 @@ services:
       - ./data/raw:/opt/airflow/data/raw
       - ./data/transformed:/opt/airflow/data/transformed
       - ./etl:/opt/airflow/etl
+      - ./sql/create:/opt/airflow/sql/create
+      - ./sql/insert:/opt/airflow/sql/insert
     command: >
       bash -c "
       airflow db migrate &&
@@ -67,6 +69,8 @@ services:
       - ./data/raw:/opt/airflow/data/raw
       - ./data/transformed:/opt/airflow/data/transformed
       - ./etl:/opt/airflow/etl
+      - ./sql/create:/opt/airflow/sql/create
+      - ./sql/insert:/opt/airflow/sql/insert
     command: airflow scheduler
 
   airflow-init:
