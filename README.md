@@ -1,4 +1,7 @@
 # Mini Data Warehouse For E-commerce with Apache Airflow
+[![en](https://img.shields.io/badge/lang-en-green.svg)](https://github.com/admczyk/Mini-Data-Warehouse-for-E-commerce-With-Apache-Airflow/blob/main/README.md)
+[![pl](https://img.shields.io/badge/lang-pl-red.svg)](https://github.com/admczyk/Mini-Data-Warehouse-for-E-commerce-With-Apache-Airflow/blob/main/README.pl.md)
+
 This project is a complete ETL (Extract, Transform, Load) pipeline that fetches product, carts and users data from the __dummyjson.com__ website, processes it and loads it into a PostgreSQL database.
 The pipeline is orchestrated using Apache Airflow.
 
@@ -34,26 +37,26 @@ mini_data_warehouse/
 |
 ├── dags/                               # Contains Apache Airflow DAGs responsible for orchestrating the workflow
 |   ├── create_table.py                     # Initializes database schema and tables
-|   ├── etl_carts.py
-|   └── etl_products_users.py
+|   ├── etl_carts.py                        # Defines ETL workflow for carts data
+|   └── etl_products_users.py               # Defines ETL workflow for products and users data
 ├── data/                               # Stores data used across the pipeline
 |   ├── raw                                 # Raw data extracted from external API (JSON format)
 |   └── transformed                         # Cleaned and processed data ready for loading (CSV format)
 ├── etl/                                # Implements the core ETL logic
 |   ├── transform/                          # Handles main logic for data transformation
-|   |   ├── carts_products_transform.py
-|   |   ├── carts_transform.py
-|   |   ├── products_reviews_transform.py
-|   |   ├── products_tags_transform.py
-|   |   ├── products_transform.py
-|   |   └── users_transform.py
-|   ├── extract.py                          # Handles data retrieval from external sources
-|   └── load.py                             # Loads processed data into PostgreSQL database
+|   |   ├── carts_products_transform.py     # Transforms items inside carts data
+|   |   ├── carts_transform.py              # Transforms carts data
+|   |   ├── products_reviews_transform.py   # Transforms product reviews data
+|   |   ├── products_tags_transform.py      # Transforms product tag data
+|   |   ├── products_transform.py           # Transforms product data
+|   |   └── users_transform.py              # Transforms users data
+|   ├── extract.py                      # Handles data retrieval from external sources
+|   └── load.py                         # Loads processed data into PostgreSQL database
 ├── sql/                                # Stores SQL queries
 |   ├── create/                             # SQL queries responsible for creating data tables 
 |   └── insert/                             # SQL queries responsible for inserting data into tables
 ├── utils/
-|   └── files_io.py
+|   └── files_io.py                         # Utility functions for reading and writing files
 ├── .env                    # Environmental variables used for configuration
 ├── docker-compose.yaml     # Defines the containerized environment, includeing Airflow services and PostgreSQL database
 ├── key_generator.py        # Generates FERNET_KEY and SECRET_KEY
