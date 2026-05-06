@@ -21,7 +21,7 @@ The dataset includes:
 - **carts items** (cart_id, product_id, product_price, product_quantity, product_total, product_total_discounted)
 
 #### Users
-- **user information** (user_id, first_name, last_name, gender, birth_date, city, state, state_code, postal_code, country, age)
+- **user information** (user_id, first_name, last_name, gender, birth_date, city, state, state_code, postal_code, country, age_group)
 
 the main goal of the project is to simulate a real-world data engineering workflow, including:
 - ETL pipeline design
