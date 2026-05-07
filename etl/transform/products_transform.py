@@ -1,7 +1,6 @@
 from airflow.decorators import task
 import pandas as pd
 import datetime as dt
-import json
 
 def normalize_product_dtypes(df):
     df["product_id"] = pd.to_numeric(df["product_id"], errors="coerce").astype("Int64")
