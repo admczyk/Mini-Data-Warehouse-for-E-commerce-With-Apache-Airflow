@@ -35,8 +35,8 @@ def clean_and_validate_carts_data(carts_df):
 def add_new_cart_values(data):
     data["cart_size_bucket"] = pd.cut(
         data["cart_total_quantity"],
-        bins=[0, 3, 6, 12, 20],
-        labels=["very_small", "small", "medium", "large"]
+        bins=[0, 3, 6, 12, 20, float("inf")],
+        labels=["very_small", "small", "medium", "large", "extreme"]
     )
 
     data["cart_value_bucket"] = pd.cut(
