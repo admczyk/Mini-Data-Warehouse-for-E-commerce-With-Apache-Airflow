@@ -251,5 +251,4 @@ docker compose down -v
 ```
 ## Future Improvements
 - Add logging to improve monitoring and debugging
-- Integrate BI tools (Power BI / Tableau)
 - Deploy pipeline to cloud
