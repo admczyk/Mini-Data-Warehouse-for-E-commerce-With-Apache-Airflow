@@ -1,8 +1,8 @@
-# Mini Data Warehouse For E-commerce with Apache Airflow
+# End-to-End Data Pipeline dla analizy E-commerce (Airflow, PostgreSQL, Power BI)
 [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/admczyk/Mini-Data-Warehouse-for-E-commerce-With-Apache-Airflow/blob/main/README.md)
 [![pl](https://img.shields.io/badge/lang-pl-green.svg)](https://github.com/admczyk/Mini-Data-Warehouse-for-E-commerce-With-Apache-Airflow/blob/main/README.pl.md)
 
-Projekt ten jest kompeltnym pipeline ETL (Extract, Transform, Load), który pobiera dane o produktach, koszykach i użytkownikach ze strony **dummyjson.com**, przetwarza je i ładuje do bazy danych PostgreSQL. Pipeline jest zarządzany przez Apache Airflow. Przetworzone dane są następnie przechowywane w bazie danych PostgreSQL, a następnie analizowane i wizualizowane za pomocą Power BI.
+Projekt ten jest kompletnym pipeline ETL (Extract, Transform, Load), który pobiera dane o produktach, koszykach i użytkownikach ze strony **dummyjson.com**, przetwarza je i ładuje do bazy danych PostgreSQL. Pipeline jest zarządzany przez Apache Airflow. Przetworzone dane są następnie przechowywane w bazie danych PostgreSQL, a następnie analizowane i wizualizowane za pomocą Power BI.
 
 ## Spis Treści
 * [Przegląd Projektu](https://github.com/admczyk/Mini-Data-Warehouse-for-E-commerce-With-Apache-Airflow/blob/main/README.pl.md#przegląd-projektu)
